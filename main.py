@@ -52,21 +52,29 @@ def register():
                 flash("Please click the link in the activation email. If you did not recieve an activation check your junk folder. If you still can not find the email support@freeside.co.uk")
     return render_template('register.html', form=form)
 
-@app.route('/<uuid:uid>')
+@app.route('/<uid>', methods=['GET', 'POST'])
 def verify_user(uid):
-    form = RegisterForm()
+    form = RegisterForm(request.form)
     user = User.query.filter_by(uuid=uid).first_or_404()
     if request.method == 'POST' and form.validate():
         client = Client('ipa.demo1.freeipa.org', version='2.215')
         client.login('admin', 'Secret123')
-        ipauser = client.user_add(form.username.data, form.first_name.data,
-                                 form.last_name.data, form.first_name.data + " " + form.last_name.data,
-                                 mail=user.email, preferred_language='EN')
-        user.account_created = True
-        db.session.commit()
+        try:
+            ipauser = client.user_add(form.username.data, form.first_name.data,
+                                        form.last_name.data, form.first_name.data + " " + form.last_name.data,
+                                        mail=user.email, preferred_language='EN')
+        except python_freeipa.exceptions.DuplicateEntry as e:
+            flash("account already exists")
+            return render_template('error.html')
+        else:
+            print(ipauser)
+            user.account_created = True
+            db.session.commit()
+            flash("Account created")
+            return render_template('error.html')
     else:
         if user.account_created == True:
             flash("Account already verified")
             return render_template('error.html')
         else:
-            return render_template('register.html', form=form)
+            return render_template('complete_registration.html', form=form)
