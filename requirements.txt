@@ -1,0 +1,5 @@
+flask
+python_freeipa
+flask_sqlalchemy
+wtforms
+flask_mail

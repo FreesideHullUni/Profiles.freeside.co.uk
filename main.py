@@ -78,3 +78,6 @@ def verify_user(uid):
             return render_template('error.html')
         else:
             return render_template('complete_registration.html', form=form)
+
+if __name__ == "__main__":
+    app.run()
