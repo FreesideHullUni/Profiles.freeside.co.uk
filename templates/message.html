@@ -2,10 +2,9 @@
 <head>
 <style>
 .simple-subscription-form {
-  background: #0c3e5f;
-  color: #fefefe;
   padding: 2rem;
   border-radius: 0;
+  text-align: center;
 }
 
 .simple-subscription-form .button {
@@ -13,16 +12,12 @@
   border-radius: 0 0 0 0;
 }
 img {
-margin: 2em 0 2em 0;
+   margin: 2em 0 2em 0;
 }
 
-ul{
+ul {
    font-size: 1.5625rem;
    list-style-type: none !important;
-}
-
-li {
-  color: #fefefe;
 }
 </style>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -49,32 +44,10 @@ li {
     </ul>
   {% endif %}
 {% endwith %}
-
-{% if form.errors %}
-    <ul class="errors">
-        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-            {% for error in field_errors %}
-                <li>{{ form[field_name].label }}: {{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-    </ul>
-{% endif %}
-
- 
-	  <form method=post>
-	    <h4>Sign Up</h4>
-	    <p>Enter your hull.ac.uk to sign up to a Freeside account</p>
-	    <div class="input-group">
-	      <span class="input-group-label">
-		<i class="fa fa-envelope"></i>
-	      </span>
-		{{form.csrf}}
-		{{form.email(class_="input-group-field")}}
-	      <button class="button">Sign Up</button>
-	  </form>
 	</div>
 	</div>
   </div>
 </div>
+
 </body>
 </html>

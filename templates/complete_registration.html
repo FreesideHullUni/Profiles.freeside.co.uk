@@ -1,4 +1,45 @@
-{% with messages = get_flashed_messages() %}
+<html>
+<head>
+<style>
+.simple-subscription-form {
+  background: #0c3e5f;
+  color: #fefefe !important;
+  padding: 2rem;
+  border-radius: 0;
+}
+
+.simple-subscription-form .button {
+  margin-bottom: 0;
+  border-radius: 0 0 0 0;
+}
+img {
+margin: 2em 0 2em 0;
+}
+
+.input-group-field{
+margin-bottom: 5px !important;
+}
+
+label {
+  color: #fefefe !important;
+}
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" integrity="sha256-GSio8qamaXapM8Fq9JYdGNTvk/dgs+cMLgPeevOYEx0=" crossorigin="anonymous" />
+</head>
+<body>
+
+
+
+<div class="grid-container">
+  <div class="grid-x align-middle align-center-middle">
+
+	  <div class="medium-5 cell">
+	  <img src="/static/freeside_logo.png">
+
+	<div class="simple-subscription-form">
+
+	  {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
     {% for message in messages %}
@@ -8,14 +49,28 @@
   {% endif %}
 {% endwith %}
 
-{% from "_formhelpers.html" import render_field %}
-<form method=post>
-  <dl>
-    {{ render_field(form.username) }}
-    {{ render_field(form.first_name) }}
-    {{ render_field(form.last_name) }}
-    {{ render_field(form.password) }}
-    {{ render_field(form.confirm) }}
-  </dl>
-  <p><input type=submit value=Register>
-</form>
+ 
+	  <form method=post>
+	    <h4>Sign Up</h4>
+	    <p>Please enter your details to complete your registration to Freeside.</p>
+		{{form.csrf}}
+		{{form.username.label}}
+		{{form.username(class_="input-group-field")}}
+		{{form.first_name.label}}
+		{{form.first_name(class_="input-group-field")}}
+		{{form.last_name.label}}
+		{{form.last_name(class_="input-group-field")}}
+		{{form.password.label}}
+		{{form.password(class_="input-group-field")}}
+		{{form.confirm.label}}
+		{{form.confirm(class_="input-group-field")}}
+
+
+	      <button class="button">Sign Up</button>
+	  </form>
+	</div>
+	</div>
+  </div>
+</div>
+</body>
+</html>
