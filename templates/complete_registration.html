@@ -54,12 +54,10 @@ label {
 	    <h4>Sign Up</h4>
 	    <p>Please enter your details to complete your registration to Freeside.</p>
 		{{form.csrf}}
-		{{form.username.label}}
-		{{form.username(class_="input-group-field")}}
+		{{form.display_name.label}}
+		{{form.display_name(class_="input-group-field")}}
 		{{form.first_name.label}}
 		{{form.first_name(class_="input-group-field")}}
-		{{form.last_name.label}}
-		{{form.last_name(class_="input-group-field")}}
 		{{form.password.label}}
 		{{form.password(class_="input-group-field")}}
 		{{form.confirm.label}}

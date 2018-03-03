@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
 from python_freeipa import Client
+import python_freeipa
 import uuid
 
 app = Flask(__name__)
@@ -22,10 +23,10 @@ class EmailForm(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
 
 class RegisterForm(Form):
-    username = StringField('Username', validators=[validators.Length(min=4, max=35),validators.DataRequired()])
-    first_name = StringField('Firstname', validators=[validators.Length(min=4, max=35),validators.DataRequired()])
-    last_name = StringField('Lastname', validators=[validators.Length(min=4, max=35),validators.DataRequired()])
+    display_name = StringField('Display Name', validators=[validators.Length(min=4, max=35),validators.DataRequired()])
+    first_name = StringField('Forename', validators=[validators.Length(min=4, max=35),validators.DataRequired()])
     password = PasswordField('Password', [
+        validators.Length(min=8),
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
@@ -67,18 +68,27 @@ def verify_user(uid):
     if request.method == 'POST' and form.validate():
         client = Client('ipa.freeside.co.uk', verify_ssl=False, version='2.215')
         client.login('admin', app.config['IPA_PASSWORD'])
+        username = user.email.split('@')[0]
+        firstname = form.first_name.data
+        firstname = firstname.title()
+        lastname = username.split('.')[-1].title()
+        username = username.replace(".","")i
         try:
-            ipauser = client.user_add(form.username.data, form.first_name.data,
-                                        form.last_name.data, form.first_name.data + " " + form.last_name.data,
-                                        mail=user.email, preferred_language='EN')
+            ipauser = client.user_add(username, firstname,
+                                        lastname, form.first_name.data + " " + lastname, display_name=form.display_name.data,
+                                        mail=user.email, preferred_language='EN',random_pass=True)
         except python_freeipa.exceptions.DuplicateEntry as e:
             flash("account already exists")
             return render_template('message.html')
         else:
-            print(ipauser)
+            client.change_password(username,ipauser['randompassword'],form.password.data)
             user.account_created = True
             db.session.commit()
-            flash("Account created!")
+            flash("Account created! Your username is: " + username)
+            msg = Message("Welcome to Freeside",
+                         recipients=[form.email.data])
+            msg.body =  "Welcome to Freeside " + firstname + " You can now in to the Freeside machines with your username which is " + username + " also don't forget to join our Discord to keep up to date with recent events! https://discord.gg/AaVMFry"
+            mail.send(msg)
             return render_template('message.html')
     else:
         if user.account_created == True:
@@ -88,4 +98,4 @@ def verify_user(uid):
             return render_template('complete_registration.html', form=form)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
