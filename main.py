@@ -72,7 +72,7 @@ def verify_user(uid):
         firstname = form.first_name.data
         firstname = firstname.title()
         lastname = username.split('.')[-1].title()
-        username = username.replace(".","")i
+        username = username.replace(".","").lower()
         try:
             ipauser = client.user_add(username, firstname,
                                         lastname, form.first_name.data + " " + lastname, display_name=form.display_name.data,
@@ -80,16 +80,18 @@ def verify_user(uid):
         except python_freeipa.exceptions.DuplicateEntry as e:
             flash("account already exists")
             return render_template('message.html')
-        else:
-            client.change_password(username,ipauser['randompassword'],form.password.data)
-            user.account_created = True
-            db.session.commit()
-            flash("Account created! Your username is: " + username)
-            msg = Message("Welcome to Freeside",
-                         recipients=[form.email.data])
-            msg.body =  "Welcome to Freeside " + firstname + " You can now in to the Freeside machines with your username which is " + username + " also don't forget to join our Discord to keep up to date with recent events! https://discord.gg/AaVMFry"
-            mail.send(msg)
-            return render_template('message.html')
+        client.change_password(username,ipauser['randompassword'],form.password.data)
+        user.account_created = True
+        db.session.commit()
+        ssh = paramiko.SSHClient()
+        ssh.connect('storage.freeside.co.uk', username='root', password=app.config['IPA_PASSWORD'])
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('userdir.sh {}'.format(username))
+        flash("Account created! Your username is: " + username)
+        msg = Message("Welcome to Freeside",
+                      recipients=[form.email.data])
+        msg.body =  "Welcome to Freeside " + firstname + " You can now in to the Freeside machines with your username which is " + username + " also don't forget to join our Discord to keep up to date with recent events! https://discord.gg/AaVMFry"
+        mail.send(msg)
+        return render_template('message.html')
     else:
         if user.account_created == True:
             flash("Account already verified!")
