@@ -5,7 +5,7 @@ from wtforms import Form, BooleanField, StringField, PasswordField, validators
 from python_freeipa import Client
 import python_freeipa
 import uuid
-
+import paramiko
 app = Flask(__name__)
 app.config.from_object('config')
 mail = Mail(app)
@@ -84,6 +84,7 @@ def verify_user(uid):
         user.account_created = True
         db.session.commit()
         ssh = paramiko.SSHClient()
+        ssh.load_system_host_keys()
         ssh.connect('storage.freeside.co.uk', username='root', password=app.config['IPA_PASSWORD'])
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('userdir.sh {}'.format(username))
         flash("Account created! Your username is: " + username)

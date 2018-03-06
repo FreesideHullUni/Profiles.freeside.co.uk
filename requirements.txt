@@ -1,5 +1,6 @@
 flask
-python_freeipa
+https://github.com/FreesideHull/python-freeipa
 flask_sqlalchemy
 wtforms
 flask_mail
+paramiko
