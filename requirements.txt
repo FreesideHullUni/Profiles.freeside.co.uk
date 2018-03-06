@@ -1,5 +1,5 @@
 flask
-https://github.com/FreesideHull/python-freeipa
+https://github.com/FreesideHull/python-freeipa/archive/develop.zip 
 flask_sqlalchemy
 wtforms
 flask_mail
