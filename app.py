@@ -6,6 +6,9 @@ from python_freeipa import Client
 import python_freeipa
 import uuid
 import paramiko
+import sys
+import os
+
 app = Flask(__name__)
 app.config.from_object('config')
 mail = Mail(app)
@@ -39,12 +42,12 @@ def register():
         #Todo: Better Email Validation
         email = form.email.data
         domain = email.split('@')[1]
-        if ".hull.ac.uk" not in domain:
+        if "hull.ac.uk" not in domain:
            flash("Please enter a valid email, please use your hull.ac.uk email.")
         else:
             user = User.query.filter_by(email=form.email.data).first()
             if user == None:
-                msg = Message("Welcome to Freeside",
+                msg = Message("Please verify your email!",
                           recipients=[form.email.data])
                 uid = str(uuid.uuid4())
                 user = User(email=form.email.data, uuid=uid)
@@ -72,6 +75,7 @@ def verify_user(uid):
         firstname = form.first_name.data
         firstname = firstname.title()
         lastname = username.split('.')[-1].title()
+        username = username.replace('-','')
         username = username.replace(".","").lower()
         try:
             ipauser = client.user_add(username, firstname,
@@ -84,13 +88,14 @@ def verify_user(uid):
         user.account_created = True
         db.session.commit()
         ssh = paramiko.SSHClient()
-        ssh.load_system_host_keys()
+        #ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect('storage.freeside.co.uk', username='root', password=app.config['IPA_PASSWORD'])
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('userdir.sh {}'.format(username))
         flash("Account created! Your username is: " + username)
         msg = Message("Welcome to Freeside",
-                      recipients=[form.email.data])
-        msg.body =  "Welcome to Freeside " + firstname + " You can now in to the Freeside machines with your username which is " + username + " also don't forget to join our Discord to keep up to date with recent events! https://discord.gg/AaVMFry"
+                      recipients=[user.email])
+        msg.body =  "Welcome to Freeside " + firstname + " You can now log in to the Freeside machines with your username: " + username + " also don't forget to join our Discord to keep up to date with recent events! https://discord.gg/AaVMFry"
         mail.send(msg)
         return render_template('message.html')
     else:
@@ -101,4 +106,4 @@ def verify_user(uid):
             return render_template('complete_registration.html', form=form)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
