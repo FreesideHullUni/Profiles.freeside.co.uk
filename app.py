@@ -8,6 +8,7 @@ import uuid
 import paramiko
 import sys
 import os
+import re
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -75,8 +76,8 @@ def verify_user(uid):
         firstname = form.first_name.data
         firstname = firstname.title()
         lastname = username.split('.')[-1].title()
-        username = username.replace('-','')
-        username = username.replace(".","").lower()
+        username = re.sub("[^a-zA-Z]+", "", username)
+        username = username.lower()
         try:
             ipauser = client.user_add(username, firstname,
                                         lastname, form.first_name.data + " " + lastname, display_name=form.display_name.data,
