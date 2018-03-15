@@ -1,4 +1,4 @@
-# Freeside-IPA-Register
+# register.Freeside.co.uk
 Flask app to register IPA accounts for Freeside users
 
 # Setting up dev enviroment
