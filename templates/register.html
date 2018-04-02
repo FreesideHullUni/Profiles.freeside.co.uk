@@ -1,81 +1,64 @@
+<!DOCTYPE html>
 <html>
 <head>
-<style>
-.simple-subscription-form {
-  background: #0c3e5f;
-  color: #fefefe;
-  padding: 2rem;
-  border-radius: 0;
-}
 
-.simple-subscription-form .button {
-  margin-bottom: 0;
-  border-radius: 0 0 0 0;
-}
-img {
-margin: 2em 0 2em 0;
-}
+	<style>
+	.simple-subscription-form {
+	 background: #0c3e5f;
+	 color: #fefefe;
+	 padding: 2rem;
+	 border-radius: 0;
+	}
 
-ul{
-   font-size: 1.5625rem;
-   list-style-type: none !important;
-}
+	.simple-subscription-form .button {
+	 margin-bottom: 0;
+	 border-radius: 0 0 0 0;
+	}
+	img {
+	margin: 2em 0 2em 0;
+	}
 
-li {
-  color: #fefefe;
-}
-</style>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" integrity="sha256-GSio8qamaXapM8Fq9JYdGNTvk/dgs+cMLgPeevOYEx0=" crossorigin="anonymous" />
+	ul{
+	  font-size: 1.5625rem;
+	  list-style-type: none !important;
+	}
+
+	li {
+	 color: #fefefe;
+	}
+	</style>
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" rel="stylesheet">
+	<title>Freeside Sign Up</title>
 </head>
-<title>Freeside Sign Up</title>
 <body>
-
-
-
-<div class="grid-container">
-  <div class="grid-x align-middle align-center-middle">
-
-	  <div class="medium-5 cell">
-	  <img src="/static/freeside_logo.png">
-
-	<div class="simple-subscription-form">
-
-	  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
-{% if form.errors %}
-    <ul class="errors">
-        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-            {% for error in field_errors %}
-                <li>{{ form[field_name].label }}: {{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-    </ul>
-{% endif %}
-
- 
-	  <form method=post>
-	    <h4>Sign Up</h4>
-	    <p>Enter your hull.ac.uk to sign up to a Freeside account</p>
-	    <div class="input-group">
-	      <span class="input-group-label">
-		<i class="fa fa-envelope"></i>
-	      </span>
-		{{form.csrf}}
-		{{form.email(class_="input-group-field")}}
-	      <button class="button">Sign Up</button>
-	  </form>
+	<div class="grid-container">
+		<div class="grid-x align-middle align-center-middle">
+			<div class="medium-5 cell">
+				<img src="/static/freeside_logo.png">
+				<div class="simple-subscription-form">
+					{% with messages = get_flashed_messages() %} {% if messages %}
+					<ul class="flashes">
+						<li style="list-style: none">{% for message in messages %}</li>
+						<li>{{ message }}</li>
+						<li style="list-style: none">{% endfor %}</li>
+					</ul>{% endif %} {% endwith %} {% if form.errors %}
+					<ul class="errors">
+						<li style="list-style: none">{% for field_name, field_errors in form.errors|dictsort if field_errors %} {% for error in field_errors %}</li>
+						<li>{{ form[field_name].label }}: {{ error }}</li>
+						<li style="list-style: none">{% endfor %} {% endfor %}</li>
+					</ul>{% endif %}
+					<form method="post">
+						<h4>Sign Up</h4>
+						<p>Enter your hull.ac.uk email to get signed up to a Freeside account.</p>
+						<p>Example: j.bloggs@2015.hull.ac.uk</p>
+						<div class="input-group">
+							<span class="input-group-label"><i class="fa fa-envelope"></i></span> {{form.csrf}} {{form.email(class_="input-group-field")}} <button class="button">Sign Up</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	</div>
-	</div>
-  </div>
-</div>
 </body>
 </html>

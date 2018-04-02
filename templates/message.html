@@ -1,54 +1,45 @@
+<!DOCTYPE html>
 <html>
 <head>
-<title>Freeside Sign Up</title>
-<style>
-.simple-subscription-form {
-  padding: 2rem;
-  border-radius: 0;
-  text-align: center;
-}
+	<title>Freeside Sign Up</title>
+	<style>
+	.simple-subscription-form {
+	 padding: 2rem;
+	 border-radius: 0;
+	 text-align: center;
+	}
 
-.simple-subscription-form .button {
-  margin-bottom: 0;
-  border-radius: 0 0 0 0;
-}
-img {
-   margin: 2em 0 2em 0;
-}
+	.simple-subscription-form .button {
+	 margin-bottom: 0;
+	 border-radius: 0 0 0 0;
+	}
+	img {
+	  margin: 2em 0 2em 0;
+	}
 
-ul {
-   font-size: 1.5625rem;
-   list-style-type: none !important;
-}
-</style>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" integrity="sha256-GSio8qamaXapM8Fq9JYdGNTvk/dgs+cMLgPeevOYEx0=" crossorigin="anonymous" />
+	ul {
+	  font-size: 1.5625rem;
+	  list-style-type: none !important;
+	}
+	</style>
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" rel="stylesheet">
 </head>
 <body>
-
-
-
-<div class="grid-container">
-  <div class="grid-x align-middle align-center-middle">
-
-	  <div class="medium-5 cell">
-	  <img src="/static/freeside_logo.png">
-
-	<div class="simple-subscription-form">
-
-	  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+	<div class="grid-container">
+		<div class="grid-x align-middle align-center-middle">
+			<div class="medium-5 cell">
+				<img src="/static/freeside_logo.png">
+				<div class="simple-subscription-form">
+					{% with messages = get_flashed_messages() %} {% if messages %}
+					<ul class="flashes">
+						<li style="list-style: none">{% for message in messages %}</li>
+						<li>{{ message }}</li>
+						<li style="list-style: none">{% endfor %}</li>
+					</ul>{% endif %} {% endwith %}
+				</div>
+			</div>
+		</div>
 	</div>
-	</div>
-  </div>
-</div>
-
 </body>
 </html>

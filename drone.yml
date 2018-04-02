@@ -1,0 +1,16 @@
+pipeline:
+  build:
+    image: python:${PYTHON_VERSION}
+    commands:
+     - pip install -r requirements.txt
+     - flake8 --version
+     - flake8
+    when:
+      branch: [master]
+      event: [push, pull_request]
+  discord:
+    image: appleboy/drone-discord
+    secrets: [ discord_webhook_id, discord_webhook_token ]
+matrix:
+  PYTHON_VERSION:
+- 3.6

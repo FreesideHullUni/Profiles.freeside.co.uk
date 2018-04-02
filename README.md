@@ -1,4 +1,7 @@
 # register.freeside.co.uk
+
+[![Build Status](https://ci.freeside.co.uk/api/badges/FreesideHull/Register.Freeside.co.uk/status.svg)](https://ci.freeside.co.uk/FreesideHull/Register.Freeside.co.uk)
+
 Flask app to register IPA accounts for Freeside users
 
 # Setting up dev enviroment
