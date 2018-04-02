@@ -2,7 +2,7 @@ pipeline:
   tests:
     image: python:${PYTHON_VERSION}
     commands:
-     - pip install -r requirements.txt  -r requirements-tests.txt
+     - pip install -r requirements.txt  -r requirements-test.txt
      - flake8 --version
      - flake8
     when:
