@@ -46,6 +46,7 @@ def register():
         # Todo: Better Email Validation
         email = form.email.data
         domain = email.split('@')[1]
+        if False:
         if "hull.ac.uk" not in domain:
             flash("Please enter a valid email, it should be your Uni email.")
         else:
@@ -59,17 +60,22 @@ def register():
                 db.session.commit()
                 msg.html = render_template("verify.html", uid=uid)
                 mail.send(msg)
-                flash("Email Sent!")
+                flash("Email sent this may take a while to arrive, "
+                       "Click the link in the activation email. "
+                       "If you can not find the email check your junk "
+                       "folder. If you have any issues please email "
+                       "support@freeside.co.uk or join our Discord "
+                       "http://discord.freeside.co.uk")
                 return render_template('message.html')
             else:
                 if user.account_created is True:
                     flash("Account already exists!")
                 else:
                     flash("Please click the link in the activation email. "
-                          "If you can not find the email check your junk"
+                          "If you can not find the email check your junk "
                           "folder. If you have any issues please email "
-                          "support@freeside.co.uk or join our "
-                          "<a href='http://discord.freeside.co.uk'>Discord</a>")
+                          "support@freeside.co.uk or join our Discord "
+                          "http://discord.freeside.co.uk")
     return render_template('register.html', form=form)
 
 
@@ -103,7 +109,7 @@ def verify_user(uid):
         flash("Account created! Your username is: " + username)
         msg = Message("Welcome to Freeside",
                       recipients=[user.email])
-        msg.html = render_template("verify.html", firstname=firstname, username=username)
+        msg.html = render_template("welcome-email.html", firstname=firstname, username=username)
         mail.send(msg)
         return render_template('message.html')
     else:
@@ -115,4 +121,4 @@ def verify_user(uid):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0',port=8000,debug=True)
