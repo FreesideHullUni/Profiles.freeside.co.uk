@@ -46,7 +46,6 @@ def register():
         # Todo: Better Email Validation
         email = form.email.data
         domain = email.split('@')[1]
-        if False:
         if "hull.ac.uk" not in domain:
             flash("Please enter a valid email, it should be your Uni email.")
         else:
