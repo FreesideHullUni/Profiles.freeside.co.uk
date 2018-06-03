@@ -13,6 +13,7 @@ app.config.from_object('config')
 mail = Mail(app)
 db = SQLAlchemy(app)
 
+print(app.config['DEBUG'])
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,20 +44,19 @@ class RegisterForm(Form):
 def register():
     form = EmailForm(request.form)
     if request.method == 'POST' and form.validate():
-        # Todo: Better Email Validation
         email = form.email.data
-        domain = email.split('@')[1]
-        if "hull.ac.uk" not in domain:
+        if app.config['DEBUG'] == False and "hull.ac.uk" not in email.split('@')[1]:
             flash("Please enter a valid email, it should be your Uni email.")
         else:
             user = User.query.filter_by(email=form.email.data).first()
             if user is None:
-                msg = Message("Please verify your email!",
-                              recipients=[form.email.data])
                 uid = str(uuid.uuid4())
                 user = User(email=form.email.data, uuid=uid)
                 db.session.add(user)
                 db.session.commit()
+ 
+                msg = Message("Please verify your email!",
+                              recipients=[form.email.data])
                 msg.html = render_template("verify.html", uid=uid)
                 mail.send(msg)
                 flash("Email sent this may take a while to arrive, "
@@ -82,6 +82,7 @@ def register():
 def verify_user(uid):
     form = RegisterForm(request.form)
     user = User.query.filter_by(uuid=uid).first_or_404()
+
     if request.method == 'POST' and form.validate():
         client = Client('ipa.freeside.co.uk', verify_ssl=False, version='2.215')
         client.login('admin', app.config['IPA_PASSWORD'])
@@ -91,20 +92,22 @@ def verify_user(uid):
         lastname = username.split('.')[-1].title()
         username = re.sub("[^a-zA-Z]+", "", username)
         username = username.lower()
+
         try:
             ipauser = client.user_add(username, firstname,
-                                      lastname, form.first_name.data + " " + lastname, display_name=form.display_name.data,
+                                      lastname, form.first_name.data + " "
+                                      + lastname, display_name=form.display_name.data,
                                       mail=user.email, preferred_language='EN', random_pass=True)
         except python_freeipa.exceptions.DuplicateEntry:
-            flash("Account already exists@")
+            flash("Account already exists.")
             return render_template('message.html')
-        client.change_password(username, ipauser['randompassword'], form.password.data)
+
+        client.passwd(username, form.password.data, current_password=ipauser['randompassword'])
         user.account_created = True
         db.session.commit()
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect('storage.freeside.co.uk', username='root', password=app.config['IPA_PASSWORD'])
-        ssh.exec_command('userdir.sh {}'.format(username))
+
+        createHomeDir(username)
+
         flash("Account created! Your username is: " + username)
         msg = Message("Welcome to Freeside",
                       recipients=[user.email])
@@ -119,5 +122,11 @@ def verify_user(uid):
             return render_template('complete_registration.html', form=form)
 
 
+def createHomeDir(username):
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect('storage.freeside.co.uk', username='root', password=app.config['IPA_PASSWORD'])
+    ssh.exec_command('userdir.sh {}'.format(username))
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=8000,debug=True)
+    app.run(host='0.0.0.0',port=8000,debug=app.config['DEBUG'])
