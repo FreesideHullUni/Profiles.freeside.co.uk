@@ -13,10 +13,9 @@ app.config.from_object('config')
 mail = Mail(app)
 db = SQLAlchemy(app)
 
-print(app.config['DEBUG'])
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     uuid = db.Column(db.String(120), unique=True)
     account_created = db.Column(db.Boolean(), unique=False, default=False)

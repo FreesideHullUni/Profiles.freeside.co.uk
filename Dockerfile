@@ -1,9 +1,7 @@
 FROM python:alpine
 MAINTAINER Kieran Coldron <kieran@coldron.com>
+
 COPY requirements.txt .
-
-
-#COPY . .
 
 RUN apk add --update py-gunicorn python-dev libffi-dev openssl-dev build-base && \
     pip install -r requirements.txt && \
@@ -11,6 +9,8 @@ RUN apk add --update py-gunicorn python-dev libffi-dev openssl-dev build-base &&
     rm -rf /var/cache/apk/*
 
 WORKDIR /usr/src/app
+
+COPY . .
 
 EXPOSE 8000
 

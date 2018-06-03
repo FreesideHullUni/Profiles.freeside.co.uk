@@ -4,4 +4,3 @@ flask_sqlalchemy
 wtforms
 flask_mail
 paramiko
-gunicorn
