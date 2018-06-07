@@ -53,7 +53,7 @@ def register():
     form = EmailForm(request.form)
     if request.method == "POST" and form.validate():
         email = form.email.data
-        if app.config["DEBUG"] == False and "hull.ac.uk" not in email.split("@")[1]:
+        if app.config["DEBUG"] is False and "hull.ac.uk" not in email.split("@")[1]:
             flash("Please enter a valid email, it should be your Uni email.")
         else:
             user = User.query.filter_by(email=form.email.data).first()

@@ -13,7 +13,7 @@ SQLALCHEMY_DATABASE_URI = "sqlite:///users.db"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 DEBUG = os.environ["DEBUG"]
 
-if DEBUG == None:
+if DEBUG is None:
     DEBUG = False
 else:
     DEBUG = True
