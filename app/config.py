@@ -9,7 +9,7 @@ MAIL_PASSWORD = os.environ["MAIL_PASSWORD"]
 MAIL_DEFAULT_SENDER = ("Freeside", "no-reply@freeside.co.uk")
 SECRET_KEY = os.environ["SECRET"]
 IPA_PASSWORD = os.environ["IPA_PASSWORD"]
-SQLALCHEMY_DATABASE_URI = "sqlite:///users.db"
+SQLALCHEMY_DATABASE_URI = os.environ["DATABASE"]
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 DEBUG = os.environ["DEBUG"]
 
