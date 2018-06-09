@@ -1,5 +1,4 @@
 from flask import (
-    Flask,
     redirect,
     session,
     request,
@@ -7,7 +6,7 @@ from flask import (
     flash,
     current_app as app,
 )
-from flask_login import current_user, login_required
+from flask_login import login_required
 import os
 import requests
 from requests_oauthlib import OAuth2Session
@@ -16,8 +15,7 @@ from requests_oauthlib import OAuth2Session
 oauth_blueprint = Blueprint("oauth", __name__)
 
 
-### DISCORD CODE
-
+# DISCORD CODE
 
 def token_updater(token):
     session["oauth2_token"] = token
@@ -103,6 +101,4 @@ def callback():
     else:
         flash("Something went wrong!")
     return redirect("/")
-
-
-### END OF DISCORD CODE
+# END OF DISCORD CODE

@@ -1,21 +1,24 @@
-from app.accounts.models.user import *
-from app.accounts.models.database import *
+from app.accounts.models.user import UserSession
+from app.accounts.models.database import User
 
-from app.accounts.forms import *
+from app.accounts.forms import LoginForm, EmailForm, RegisterForm
+
+from mail import mail
+
+from database import db
+
 
 from flask import (
-    Flask,
     flash,
     request,
     render_template,
     Blueprint,
     redirect,
     url_for,
-    render_template_string,
     current_app as app,
 )
-from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail, Message
+
+from flask_mail import Message
 from python_freeipa import Client, exceptions
 import uuid
 import paramiko
@@ -78,7 +81,8 @@ def register():
 
                 msg = Message("Please verify your email!", recipients=[form.email.data])
                 msg.html = render_template("emails/verify.html", uid=uid)
-                mail.send(msg)
+                with app.app_context():
+                    mail.send(msg)
                 flash(
                     "Email sent this may take a while to arrive, "
                     "Click the link in the activation email. "
@@ -131,8 +135,9 @@ def verify_user(uid):
         except exceptions.DuplicateEntry:
             flash("Account already exists.")
             return render_template("layout.html")
-
-        client.passwd(
+        print(ipauser["randompassword"])
+        client.login(username, ipauser["randompassword"])
+        client.change_password(
             username, form.password.data, current_password=ipauser["randompassword"]
         )
         user.account_created = True
@@ -140,17 +145,18 @@ def verify_user(uid):
 
         createHomeDir(username)
 
-        flash("Account created! Your username is: " + username)
         msg = Message("Welcome to Freeside", recipients=[user.email])
         msg.html = render_template(
             "emails/welcome.html", firstname=firstname, username=username
         )
-        mail.send(msg)
-        return render_template("layout.html")
+        with app.app_context():
+            mail.send(msg)
+        flash("Account created! Your username is: " + username)
+        return redirect(url_for("accounts.home"))
     else:
         if user.account_created is True:
             flash("Account already verified!")
-            return render_template("layout.html")
+            return redirect(url_for("accounts.home"))
         else:
             return render_template("complete_registration.html", form=form)
 
