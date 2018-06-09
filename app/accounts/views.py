@@ -3,52 +3,62 @@ from app.accounts.models.database import *
 
 from app.accounts.forms import *
 
-from flask import Flask, flash, request, render_template, Blueprint,redirect,url_for, render_template_string, current_app as app
+from flask import (
+    Flask,
+    flash,
+    request,
+    render_template,
+    Blueprint,
+    redirect,
+    url_for,
+    render_template_string,
+    current_app as app,
+)
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from python_freeipa import Client, exceptions
 import uuid
 import paramiko
 import re
-from flask_login import login_user,logout_user, current_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required
 
 
-accounts_blueprint = Blueprint('accounts', __name__, template_folder='templates')
+accounts_blueprint = Blueprint("accounts", __name__, template_folder="templates")
 
 
-@accounts_blueprint.route('/')
+@accounts_blueprint.route("/")
 def home():
     print(current_user)
     # Redirect users who are not logged in.
     if not current_user or current_user.is_anonymous:
-        return redirect(url_for('accounts.login'))
-    return render_template('profile.html')
+        return redirect(url_for("accounts.login"))
+    return render_template("profile.html")
 
 
-@accounts_blueprint.route('/login', methods=['GET', 'POST'])
+@accounts_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
-    if request.method == 'POST' and form.validate():
-        client = Client('ipa.freeside.co.uk', verify_ssl=False, version='2.215')
+    if request.method == "POST" and form.validate():
+        client = Client("ipa.freeside.co.uk", verify_ssl=False, version="2.215")
         try:
             uid = form.username.data
             client.login(uid, form.password.data)
             data = client.user_show(uid)
             login_user(UserSession(uid, data))
             flash("Logged in!")
-            return redirect('/')
+            return redirect("/")
         except exceptions.Unauthorized:
             flash("Invalid username or password")
         except exceptions.NotFound:
             flash("User not in database.")
-    return render_template('login.html', form=form)
+    return render_template("login.html", form=form)
 
 
 @accounts_blueprint.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect("/")
 
 
 @accounts_blueprint.route("/register", methods=["GET", "POST"])

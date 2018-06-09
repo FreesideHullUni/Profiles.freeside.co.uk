@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--config", "deploy/gunicorn_config.py","--chdir","app","app:app"]
+CMD ["gunicorn", "--config", "deploy/gunicorn_config.py","main:app"]
