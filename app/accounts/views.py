@@ -136,9 +136,8 @@ def verify_user(uid):
             flash("Account already exists.")
             return render_template("layout.html")
         print(ipauser["randompassword"])
-        client.login(username, ipauser["randompassword"])
         client.change_password(
-            username, form.password.data, current_password=ipauser["randompassword"]
+            username, form.password.data, ipauser["randompassword"]
         )
         user.account_created = True
         db.session.commit()
