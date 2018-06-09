@@ -1,32 +1,35 @@
 {% extends "layout.html" %}
-{% block title %}Login | {% endblock %}
+{% block title %}Join | {% endblock %}
 
 {% block content %}
 {% from "_formhelpers.html" import render_field %}
+
+
+			<p>Enter your hull.ac.uk email to get signed up to a Freeside account.</p>
+			<p>Example: j.bloggs@2015.hull.ac.uk</p>
           <form class="col s12" method="post">
                   {{form.csrf}}
-
             <div class='row'>
-              <div class='input-field col s12'>
-                 {{ render_field(form.username) }}
+              <div class='col s12'>
               </div>
             </div>
 
             <div class='row'>
               <div class='input-field col s12'>
-                    {{ render_field(form.password) }}
+                 {{ render_field(form.email) }}
               </div>
-              <label style='float: right;'>
-								<a class='pink-text' href='#!'><b>Forgot Password?</b></a>
-							</label>
             </div>
 
             <br />
             <center>
               <div class='row'>
-                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect'>Login</button>
+                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect'>Send Email</button>
               </div>
             </center>
           </form>
-      <a href="/join">Join Freeside</a>
+
 {% endblock %}
+
+
+
+

@@ -1,40 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-	    <title>{% block title %}{% endblock %} - Freeside</title>
-	<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+	<title>{% block title %}{% endblock %} Freeside</title>
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" rel="stylesheet">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='materialize/css/materialize.min.css') }}"  media="screen,projection"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+
 </head>
 <body>
-	<div class="grid-container">
-		<div class="grid-x align-middle align-center-middle">
-			<div class="medium-5 cell">
-				<img src="{{ url_for('static', filename='freeside_logo.png') }}">
-                    <div id="content">
+
+
+	
+      <div class="section"></div>
+
+  <main>
+    <center>
+      <img class="responsive-img" style="width: 250px;" src="{{ url_for('static', filename='freeside_logo.png') }}"/>
+      <div class="section"></div>
 					{% with messages = get_flashed_messages() %} {% if messages %}
                     <ul class="flashes">
-						<li style="list-style: none">{% for message in messages %}</li>
-						<li>{{ message }}</li>
-						<li style="list-style: none">{% endfor %}</li>
-					</ul>{% endif %} {% endwith %}
+						{% for message in messages %}
+						<li style="list-style: none"><h5 class="indigo-text">{{ message }}</h5></li>
+						{% endfor %}
+					</ul>{% endif %} 
+					{% endwith %}
 
-					{{message or ''}}
+      <div class="section"></div>
 
-					{% if form %}
-                    {% if form.errors %}
-					<ul class="errors">
-						<li style="list-style: none">{% for field_name, field_errors in form.errors|dictsort if field_errors %} {% for error in field_errors %}</li>
-						<li>{{ form[field_name].label }}: {{ error }}</li>
-						<li style="list-style: none">{% endfor %} {% endfor %}</li>
-					</ul>
-                    {% endif %}
-                    {% endif %}
+      <div class="container">
+              <div class="z-depth-1 grey lighten-4 row" style="display: inline-block; padding: 32px 48px 0px 48px; border: 1px solid #EEE;">
+              {%if message%}
+					    <h5>{{message}}</h5>
+                <div class="section"></div>
+              {% endif %} 
+{% block content %}{% endblock %}
+</div>
+      </div>
+    </center>
+  </main>
 
-                    {% block content %}{% endblock %}
-                    </div>
-			</div>
-		</div>
-	</div>
+
+
+
+                    
+ <script type="text/javascript" src="{{ url_for('static', filename='materialize/js/materialize.min.js') }}"></script>
+
 </body>
 </html>

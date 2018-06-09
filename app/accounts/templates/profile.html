@@ -1,7 +1,14 @@
 {% extends "layout.html" %}
-{% block title %}Registration{% endblock %}
+{% block title %}Profile | {% endblock %}
 
 {% block content %}
-<a class="button" href="/discord"><i class="fab fa-discord"></i>Connect with Discord</a>
-<a class="button" href="/logout">Logout</a>
+            <div class="col s12">
+              <div class='row'>
+                <a href="/discord" name='btn_login' class='col s12 btn btn-large waves-effect'><i class="fab fa-discord"></i> Connect with Discord</a>
+               </div>
+
+              <div class='row'>
+                <a href="/logout" name='btn_login' class='col s12 btn btn-large waves-effect'><i class="fab fa-discord"></i>Logout</a>
+              </div>
+             </div>
 {% endblock %}

@@ -15,6 +15,7 @@ from flask import (
     Blueprint,
     redirect,
     url_for,
+    Markup,
     current_app as app,
 )
 
@@ -64,7 +65,7 @@ def logout():
     return redirect("/")
 
 
-@accounts_blueprint.route("/register", methods=["GET", "POST"])
+@accounts_blueprint.route("/join", methods=["GET", "POST"])
 def register():
     form = EmailForm(request.form)
     if request.method == "POST" and form.validate():
@@ -83,27 +84,30 @@ def register():
                 msg.html = render_template("emails/verify.html", uid=uid)
                 with app.app_context():
                     mail.send(msg)
-                flash(
+                info_msg = Markup(
                     "Email sent this may take a while to arrive, "
                     "Click the link in the activation email. "
-                    "If you can not find the email check your junk "
+                    "If you can't find the email check your junk "
                     "folder. If you have any issues please email "
-                    "support@freeside.co.uk or join our Discord "
-                    "http://discord.freeside.co.uk"
+                    "support@freeside.co.uk or join our "
+                    "<a href='http://discord.freeside.co.uk'>Discord</a>."
                 )
-                return render_template("layout.html")
+                return render_template("layout.html", message=info_msg)
             else:
+                info_msg = ""
                 if user.account_created is True:
-                    flash("Account already exists!")
+                    info_msg = "Account already exists!"
                 else:
-                    flash(
+                    info_msg = Markup(
                         "Please click the link in the activation email. "
-                        "If you can not find the email check your junk "
+                        "If you can't find the email check your junk "
                         "folder. If you have any issues please email "
-                        "support@freeside.co.uk or join our Discord "
-                        "http://discord.freeside.co.uk"
+                        "support@freeside.co.uk or join our "
+                        "<a href='http://discord.freeside.co.uk'>Discord</a>."
                     )
-    return render_template("register.html", form=form)
+                return render_template("layout.html", message=info_msg)
+
+    return render_template("join.html", form=form)
 
 
 @accounts_blueprint.route("/verify/<uid>", methods=["GET", "POST"])
