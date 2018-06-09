@@ -21,6 +21,7 @@ login_manager = LoginManager(app)
 
 bind = Client("ipa.freeside.co.uk", verify_ssl=False, version="2.215")
 
+
 @app.login_manager.user_loader
 def load_user(uid):
     try:
