@@ -1,54 +1,57 @@
-from flask import Flask, flash, request, render_template
+from app.accounts.models.user import *
+from app.accounts.models.database import *
+
+from app.accounts.forms import *
+
+from flask import Flask, flash, request, render_template, Blueprint,redirect,url_for, render_template_string, current_app as app
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
-from wtforms import Form, StringField, PasswordField, validators
-from python_freeipa import Client
-import python_freeipa
+from python_freeipa import Client, exceptions
 import uuid
 import paramiko
 import re
-
-app = Flask(__name__)
-app.config.from_object("config")
-mail = Mail(app)
-db = SQLAlchemy(app)
+from flask_login import login_user,logout_user, current_user, login_required
 
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    uuid = db.Column(db.String(120), unique=True)
-    account_created = db.Column(db.Boolean(), unique=False, default=False)
-
-    def __repr__(self):
-        return "<User %r>" % self.username
+accounts_blueprint = Blueprint('accounts', __name__, template_folder='templates')
 
 
-class EmailForm(Form):
-    email = StringField("Email Address", [validators.Length(min=6, max=35)])
+@accounts_blueprint.route('/')
+def home():
+    print(current_user)
+    # Redirect users who are not logged in.
+    if not current_user or current_user.is_anonymous:
+        return redirect(url_for('accounts.login'))
+    return render_template('profile.html')
 
 
-class RegisterForm(Form):
-    display_name = StringField(
-        "Display Name",
-        validators=[validators.Length(min=2, max=35), validators.DataRequired()],
-    )
-    first_name = StringField(
-        "Forename",
-        validators=[validators.Length(min=2, max=35), validators.DataRequired()],
-    )
-    password = PasswordField(
-        "Password",
-        [
-            validators.Length(min=8),
-            validators.DataRequired(),
-            validators.EqualTo("confirm", message="Passwords must match"),
-        ],
-    )
-    confirm = PasswordField("Repeat Password")
+@accounts_blueprint.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        client = Client('ipa.freeside.co.uk', verify_ssl=False, version='2.215')
+        try:
+            uid = form.username.data
+            client.login(uid, form.password.data)
+            data = client.user_show(uid)
+            login_user(UserSession(uid, data))
+            flash("Logged in!")
+            return redirect('/')
+        except exceptions.Unauthorized:
+            flash("Invalid username or password")
+        except exceptions.NotFound:
+            flash("User not in database.")
+    return render_template('login.html', form=form)
 
 
-@app.route("/", methods=["GET", "POST"])
+@accounts_blueprint.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+
+
+@accounts_blueprint.route("/register", methods=["GET", "POST"])
 def register():
     form = EmailForm(request.form)
     if request.method == "POST" and form.validate():
@@ -64,7 +67,7 @@ def register():
                 db.session.commit()
 
                 msg = Message("Please verify your email!", recipients=[form.email.data])
-                msg.html = render_template("verify.html", uid=uid)
+                msg.html = render_template("emails/verify.html", uid=uid)
                 mail.send(msg)
                 flash(
                     "Email sent this may take a while to arrive, "
@@ -74,7 +77,7 @@ def register():
                     "support@freeside.co.uk or join our Discord "
                     "http://discord.freeside.co.uk"
                 )
-                return render_template("message.html")
+                return render_template("layout.html")
             else:
                 if user.account_created is True:
                     flash("Account already exists!")
@@ -89,7 +92,7 @@ def register():
     return render_template("register.html", form=form)
 
 
-@app.route("/verify/<uid>", methods=["GET", "POST"])
+@accounts_blueprint.route("/verify/<uid>", methods=["GET", "POST"])
 def verify_user(uid):
     form = RegisterForm(request.form)
     user = User.query.filter_by(uuid=uid).first_or_404()
@@ -115,9 +118,9 @@ def verify_user(uid):
                 preferred_language="EN",
                 random_pass=True,
             )
-        except python_freeipa.exceptions.DuplicateEntry:
+        except exceptions.DuplicateEntry:
             flash("Account already exists.")
-            return render_template("message.html")
+            return render_template("layout.html")
 
         client.passwd(
             username, form.password.data, current_password=ipauser["randompassword"]
@@ -130,14 +133,14 @@ def verify_user(uid):
         flash("Account created! Your username is: " + username)
         msg = Message("Welcome to Freeside", recipients=[user.email])
         msg.html = render_template(
-            "welcome-email.html", firstname=firstname, username=username
+            "emails/welcome.html", firstname=firstname, username=username
         )
         mail.send(msg)
-        return render_template("message.html")
+        return render_template("layout.html")
     else:
         if user.account_created is True:
             flash("Account already verified!")
-            return render_template("message.html")
+            return render_template("layout.html")
         else:
             return render_template("complete_registration.html", form=form)
 
@@ -149,7 +152,3 @@ def createHomeDir(username):
         "storage.freeside.co.uk", username="root", password=app.config["IPA_PASSWORD"]
     )
     ssh.exec_command("userdir.sh {}".format(username))
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=app.config["DEBUG"])

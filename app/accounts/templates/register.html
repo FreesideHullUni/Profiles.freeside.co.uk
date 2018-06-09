@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Registration{% endblock %}
+
+{% block content %}
+					<form method="post">
+						<h4>Sign Up</h4>
+						<p>Enter your hull.ac.uk email to get signed up to a Freeside account.</p>
+						<p>Example: j.bloggs@2015.hull.ac.uk</p>
+						<div class="input-group">
+							<span class="input-group-label"><i class="fa fa-envelope"></i></span> {{form.csrf}} {{form.email(class_="input-group-field")}} <button class="button">Sign Up</button>
+						</div>
+					</form>
+{% endblock %}
+
+
+
+

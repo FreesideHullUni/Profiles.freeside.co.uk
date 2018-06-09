@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	    <title>{% block title %}{% endblock %} - Freeside</title>
+	<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" rel="stylesheet">
+</head>
+<body>
+	<div class="grid-container">
+		<div class="grid-x align-middle align-center-middle">
+			<div class="medium-5 cell">
+				<img src="{{ url_for('static', filename='freeside_logo.png') }}">
+                    <div id="content">
+					{% with messages = get_flashed_messages() %} {% if messages %}
+                    <ul class="flashes">
+						<li style="list-style: none">{% for message in messages %}</li>
+						<li>{{ message }}</li>
+						<li style="list-style: none">{% endfor %}</li>
+					</ul>{% endif %} {% endwith %}
+
+					{{message or ''}}
+
+					{% if form %}
+                    {% if form.errors %}
+					<ul class="errors">
+						<li style="list-style: none">{% for field_name, field_errors in form.errors|dictsort if field_errors %} {% for error in field_errors %}</li>
+						<li>{{ form[field_name].label }}: {{ error }}</li>
+						<li style="list-style: none">{% endfor %} {% endfor %}</li>
+					</ul>
+                    {% endif %}
+                    {% endif %}
+
+                    {% block content %}{% endblock %}
+                    </div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

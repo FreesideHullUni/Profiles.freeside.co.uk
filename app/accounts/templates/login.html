@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}Registration{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        {{form.csrf}}
+        <label>Username{{ form.username() }}</label>
+        <label>Password{{ form.password() }}</label>
+        <button class='button'>Sign In</button>
+    </form>
+{% endblock %}
