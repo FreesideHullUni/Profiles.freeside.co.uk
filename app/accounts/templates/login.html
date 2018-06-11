@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block title %}Login | {% endblock %}
+
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+          <form class="col s12" method="post">
+                  {{form.csrf}}
+
+            <div class='row'>
+              <div class='input-field col s12'>
+                 {{ render_field(form.username) }}
+              </div>
+            </div>
+
+            <div class='row'>
+              <div class='input-field col s12'>
+                    {{ render_field(form.password) }}
+              </div>
+              <!--
+              <label style='float: right;'>
+								<a class='pink-text' href='#!'><b>Forgot Password?</b></a>
+							</label>
+              !-->
+            </div>
+
+            <br />
+            <center>
+              <div class='row'>
+                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect'>Login</button>
+              </div>
+            </center>
+          </form>
+      <a href="/join">Join Freeside</a>
+{% endblock %}

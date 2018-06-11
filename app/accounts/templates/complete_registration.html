@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Finish Registration | {% endblock %}
+
+{% block content %}
+		<p>Please enter your details to complete your registration to Freeside.</p>{{form.csrf}} 
+		{% from "_formhelpers.html" import render_field %}
+          <form class="col s12" method="post">
+		       {{form.csrf}}
+
+            <div class='row'>
+              <div class='input-field col s12'>
+                 {{ render_field(form.display_name) }}
+              </div>
+            </div>
+            <div class='row'>
+              <div class='input-field col s12'>
+                 {{ render_field(form.first_name) }}
+              </div>
+            </div>
+            <div class='row'>
+              <div class='input-field col s12'>
+                 {{ render_field(form.password) }}
+              </div>
+            </div>
+            <div class='row'>
+              <div class='input-field col s12'>
+                 {{ render_field(form.confirm) }}
+              </div>
+            </div>
+            <center>
+              <div class='row'>
+                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect'>Create Account</button>
+              </div>
+            </center>
+			</form>
+{% endblock %}
+
+
+

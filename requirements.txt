@@ -1,6 +1,10 @@
 flask
-python-freeipa
 flask_sqlalchemy
-wtforms
 flask_mail
+Flask-Migrate
+flask-login
+https://github.com/FreesideHull/python-freeipa/archive/develop.zip
+wtforms
 paramiko
+requests_oauthlib
+gunicorn
