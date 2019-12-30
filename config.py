@@ -9,7 +9,7 @@ MAIL_USERNAME = "admin@freeside.co.uk"
 MAIL_PASSWORD = os.environ["MAIL_PASSWORD"]
 MAIL_DEFAULT_SENDER = ("Freeside", "no-reply@freeside.co.uk")
 
-
+IPA_USERNAME = os.environ["IPA_USERNAME"]
 IPA_PASSWORD = os.environ["IPA_PASSWORD"]
 
 SQLALCHEMY_DATABASE_URI = "sqlite:///data/users.db"

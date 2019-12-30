@@ -117,7 +117,7 @@ def verify_user(uid):
 
     if request.method == "POST" and form.validate():
         client = Client("ipa.freeside.co.uk", verify_ssl=False, version="2.215")
-        client.login("admin", app.config["IPA_PASSWORD"])
+        client.login(app.config["IPA_USERNAME"], app.config["IPA_PASSWORD"])
         username = user.email.split("@")[0]
         firstname = form.first_name.data
         firstname = firstname.title()
@@ -166,6 +166,8 @@ def createHomeDir(username):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(
-        "storage.freeside.co.uk", username="root", password=app.config["IPA_PASSWORD"]
+        "storage.freeside.co.uk",
+        username=app.config["IPA_USERNAME"],
+        password=app.config["IPA_PASSWORD"]
     )
-    ssh.exec_command("userdir.sh {}".format(username))
+    ssh.exec_command("sudo /usr/bin/userdir.sh {}".format(username))
