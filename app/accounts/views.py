@@ -170,4 +170,4 @@ def createHomeDir(username):
 		username=app.config["IPA_USERNAME"],
 		password=app.config["IPA_PASSWORD"]
     )
-    ssh.exec_command("userdir.sh {}".format(username))
+    ssh.exec_command("sudo /usr/bin/userdir.sh {}".format(username))
