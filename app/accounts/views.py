@@ -166,6 +166,8 @@ def createHomeDir(username):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(
-        "storage.freeside.co.uk", username="root", password=app.config["IPA_PASSWORD"]
+        "storage.freeside.co.uk",
+		username=app.config["IPA_USERNAME"],
+		password=app.config["IPA_PASSWORD"]
     )
     ssh.exec_command("userdir.sh {}".format(username))
