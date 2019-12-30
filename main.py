@@ -25,7 +25,7 @@ bind = Client("ipa.freeside.co.uk", verify_ssl=False, version="2.215")
 @app.login_manager.user_loader
 def load_user(uid):
     try:
-        bind.login("admin", app.config["IPA_PASSWORD"])
+        bind.login(app.config["IPA_USERNAME"], app.config["IPA_PASSWORD"])
         data = bind.user_show(uid)
         user = UserSession(uid, data)
         return user
