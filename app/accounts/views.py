@@ -117,7 +117,7 @@ def verify_user(uid):
 
     if request.method == "POST" and form.validate():
         client = Client("ipa.freeside.co.uk", verify_ssl=False, version="2.215")
-        client.login(app.config["IPA_USER"], app.config["IPA_PASSWORD"])
+        client.login(app.config["IPA_USERNAME"], app.config["IPA_PASSWORD"])
         username = user.email.split("@")[0]
         firstname = form.first_name.data
         firstname = firstname.title()
