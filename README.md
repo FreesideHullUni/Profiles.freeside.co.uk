@@ -17,5 +17,10 @@ FLASK_APP=main:app flask run
 Running inside docker.
 ```
 docker build -t freesidehull/profiles .
+docker run --env-file ./deploy/env.list --name=profiles -v "$(pwd)/data":/usr/src/app/data -p 8000:8000 -d freesidehull/profiles
+```
+
+(OLD COMMAND)
+```
 docker run --env-file ./deploy/env.list --name=profiles -v "$(pwd)/data":/usr/src/app/data freesidehull/profiles
 ```
