@@ -3,7 +3,7 @@ MAINTAINER Kieran Coldron <kieran@coldron.com>
 
 COPY requirements.txt .
 
-RUN apk add --update python3-dev libffi-dev openssl-dev build-base && \
+RUN apk add --update python3-dev libffi-dev openssl-dev build-base rust cargo && \
     pip3 install --upgrade pip setuptools && \
     pip3 install -r requirements.txt && \
     apk del build-base && \
