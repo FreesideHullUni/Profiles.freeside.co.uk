@@ -1,3 +1,5 @@
+# Please see https://github.com/FreesideHull/Profiles.Freeside.co.uk for an updated repo
+
 # Profiles.Freeside.co.uk
 
 [![Build Status](https://ci.freeside.co.uk/api/badges/FreesideHull/Profiles.Freeside.co.uk/status.svg)](https://ci.freeside.co.uk/FreesideHull/Profiles.Freeside.co.uk)
